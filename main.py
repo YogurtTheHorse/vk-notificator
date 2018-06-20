@@ -57,6 +57,15 @@ def pincode_command(event: Event, pin: str):
         return 'Pin-code mismatched.\nPin-code changed.'
 
 
+def check_permission(user_id, peer):
+    if user_id == peer:
+        return True
+    elif vk.messages.getChat(chat_id=peer)['admin_id'] == user_id:
+        return True
+    else:
+        return chat_manager.is_admin(peer, user_id)
+
+
 def list_subscriptions(event: Event, *args):
     subscriptions = chat_manager.get_subscriptions(event.peer_id)
 
@@ -84,7 +93,7 @@ def list_subscriptions(event: Event, *args):
 
 
 def subscribe_group(event: Event, link: str, *args):
-    if event.from_chat and not chat_manager.is_admin(event.chat_id, event.user_id):
+    if not check_permission(event.user_id, event.peer_id):
         return 'You are not admin.'
 
     try:
@@ -108,7 +117,7 @@ def subscribe_group(event: Event, link: str, *args):
 
 
 def unsubscribe_group(event: Event, link: str):
-    if event.from_chat and not chat_manager.is_admin(event.chat_id, event.user_id):
+    if not check_permission(event.user_id, event.peer_id):
         return 'You are not admin.'
 
     try:
@@ -130,7 +139,7 @@ def unsubscribe_group(event: Event, link: str):
 
 
 def subscribe_user(event: Event, link: str, filter: str = '', *args):
-    if event.from_chat and not chat_manager.is_admin(event.chat_id, event.user_id):
+    if not check_permission(event.user_id, event.peer_id):
         return 'You are not admin.'
 
     try:
@@ -158,7 +167,7 @@ def subscribe_user(event: Event, link: str, filter: str = '', *args):
 
 
 def unsubscribe_user(event: Event, link: str, filter: str = '', *args):
-    if event.from_chat and not chat_manager.is_admin(event.chat_id, event.user_id):
+    if not check_permission(event.user_id, event.peer_id):
         return 'You are not admin.'
 
     try:
