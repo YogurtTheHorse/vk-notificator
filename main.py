@@ -144,13 +144,15 @@ def subscribe_user(event: Event, link: str, filter: str = '', *args):
         if chat_manager.is_subscribed('user', event.peer_id, resp[0]["id"]):
             return 'Already subscribed for {0}'.format(user_name)
 
-        if vk.friends.areFriens(user_ids=resp[0]["id"])[0]["friend_status"] == 0:
-            vk.firends.add(user_id=resp[0]["id"], text='Здравствуйте, я автоматический бот для агрегации собщений '
+        if vk.friends.areFriends(user_ids=resp[0]["id"])[0]["friend_status"] == 0:
+            vk.friends.add(user_id=resp[0]["id"], text='Здравствуйте, я автоматический бот для агрегации собщений '
                                                        'преподавателей. Я подписался на вас, что бы пересылать ваши '
                                                        'посты в группы ИПМ\'а. Не обязательно добавлять меня в '
                                                        'друзья. Автор - @yegorf1')
 
         chat_manager.subscribe_user(event.peer_id, resp[0]["id"], filter)
+
+        return 'Subscribed for {0}'.format(user_name)
     except:
         return 'Unable to subscribe'
 
