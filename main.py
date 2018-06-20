@@ -98,6 +98,8 @@ def subscribe_group(event: Event, link: str, *args):
         if chat_manager.is_subscribed('group', event.peer_id, resp[0]["id"]):
             return 'Already subscribed for {0}'.format(group_name)
 
+        vk.groups.join(group_id=resp[0]['id'])
+
         chat_manager.subscribe_group(event.peer_id, resp[0]["id"])
 
         return 'Subscribed for {0}'.format(group_name)
@@ -105,7 +107,7 @@ def subscribe_group(event: Event, link: str, *args):
         return 'Could not subscribe'
 
 
-def subscribe_user(event: Event, link: str, filter: str= '', *args):
+def subscribe_user(event: Event, link: str, filter: str = '', *args):
     if event.from_chat and not chat_manager.is_admin(event.chat_id, event.user_id):
         return 'You are not admin.'
 
@@ -119,6 +121,12 @@ def subscribe_user(event: Event, link: str, filter: str= '', *args):
 
         if chat_manager.is_subscribed('user', event.peer_id, resp[0]["id"]):
             return 'Already subscribed for {0}'.format(user_name)
+
+        if vk.friends.areFriens(user_ids=resp[0]["id"])[0]["friend_status"] == 0:
+            vk.firends.add(user_id=resp[0]["id"], message='Здравствуйте, я автоматический бот для агрегации собщений '
+                                                          'преподавателей. Я подписался на вас, что бы пересылать ваши '
+                                                          'посты в группы ИПМ\'а. Не обязательно добавлять меня в '
+                                                          'друзья. Автор - @yegorf1')
 
         chat_manager.subscribe_user(event.peer_id, resp[0]["id"], filter)
 
