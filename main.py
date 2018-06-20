@@ -107,6 +107,28 @@ def subscribe_group(event: Event, link: str, *args):
         return 'Could not subscribe'
 
 
+def unsubscribe_group(event: Event, link: str):
+    if event.from_chat and not chat_manager.is_admin(event.chat_id, event.user_id):
+        return 'You are not admin.'
+
+    try:
+        group_id = link.split('com/')[1]
+        resp = vk.groups.getById(group_id=group_id)
+
+        if 'error' in resp:
+            return 'Could not find group with id {0}'.format(group_id)
+        group_name = resp[0]['name']
+
+        if not chat_manager.is_subscribed('group', event.peer_id, resp[0]["id"]):
+            return 'You are not subscribed for {0}'.format(group_name)
+
+        chat_manager.unsubscribe_group(event.peer_id, resp[0]["id"])
+
+        return 'Unsubscribed from {0}'.format(group_name)
+    except:
+        return 'Could not unsubscribe'
+
+
 def subscribe_user(event: Event, link: str, filter: str = '', *args):
     if event.from_chat and not chat_manager.is_admin(event.chat_id, event.user_id):
         return 'You are not admin.'
@@ -130,9 +152,27 @@ def subscribe_user(event: Event, link: str, filter: str = '', *args):
 
         chat_manager.subscribe_user(event.peer_id, resp[0]["id"], filter)
 
-        return 'Subscribed for {0}'.format(user_name)
+
+def subscribe_user(event: Event, link: str, filter: str = '', *args):
+    if event.from_chat and not chat_manager.is_admin(event.chat_id, event.user_id):
+        return 'You are not admin.'
+
+    try:
+        user_id = link.split('com/')[1]
+        resp = vk.users.get(user_ids=user_id)
+
+        if 'error' in resp:
+            return 'Could not find user with id {0}'.format(user_id)
+        user_name = '{first_name} {last_name}'.format(**resp[0])
+
+        if not chat_manager.is_subscribed('user', event.peer_id, resp[0]["id"]):
+            return 'Not subscribed for {0}'.format(user_name)
+
+        chat_manager.unsubscribe_user(event.peer_id, resp[0]["id"])
+
+        return 'Unsubscribed from {0}'.format(user_name)
     except Exception as e:
-        return 'Could not subscribe'
+        return 'Unable to unsubscribe'
 
 
 def new_message(event: Event):
@@ -205,11 +245,21 @@ if __name__ == '__main__':
     message_parser.add_command('subscribe_group',
                                action=subscribe_group,
                                help_message='Subscribe group for current chat for notifications',
-                               args_description='link')
+                               args_description='link_to_group')
+
+    message_parser.add_command('unsubscribe_group',
+                               action=unsubscribe_group,
+                               help_message='Unsubscribes chat from post of group',
+                               args_description='link_to_user')
 
     message_parser.add_command('subscribe_user',
                                action=subscribe_user,
                                help_message='Connect user posts to current chat',
-                               args_description='link [filter]')
+                               args_description='link_to_user')
+
+    message_parser.add_command('unsubscribe_user',
+                               action=unsubscribe_user,
+                               help_message='Unsubscribes chat from post of user',
+                               args_description='link_to_user')
 
     main(parsed_args.login, parsed_args.password)

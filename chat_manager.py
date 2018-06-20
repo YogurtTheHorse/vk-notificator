@@ -35,3 +35,11 @@ def get_subscriptions(peer_id):
 
 def subscribe_user(peer_id, user_id, filter=None):
     database.subscriptions.insert_one({'peer': peer_id, 'type': 'user', 'user': user_id, 'filter': filter})
+
+
+def unsubscribe_group(peer_id, id):
+    database.subscriptions.remove_many({'peer': peer_id, 'type': 'group', 'group': id})
+
+
+def unsubscribe_user(peer_id, id):
+    database.subscriptions.remove_many({'peer': peer_id, 'type': 'user', 'user': id})
