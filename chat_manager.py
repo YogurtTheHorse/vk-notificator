@@ -38,8 +38,8 @@ def subscribe_user(peer_id, user_id, filter=None):
 
 
 def unsubscribe_group(peer_id, id):
-    database.subscriptions.remove_many({'peer': peer_id, 'type': 'group', 'group': id})
+    database.subscriptions.remove({'peer': peer_id, 'type': 'group', 'group': id})
 
 
 def unsubscribe_user(peer_id, id):
-    database.subscriptions.remove_many({'peer': peer_id, 'type': 'user', 'user': id})
+    database.subscriptions.remove({'peer': peer_id, 'type': 'user', 'user': id})
