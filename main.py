@@ -57,13 +57,13 @@ def pincode_command(event: Event, pin: str):
         return 'Pin-code mismatched.\nPin-code changed.'
 
 
-def check_permission(user_id, peer):
-    if user_id == peer:
+def check_permission(event: Event):
+    if event.from_user:
         return True
-    elif vk.messages.getChat(chat_id=peer)['admin_id'] == user_id:
+    elif event.from_chat and vk.messages.getChat(chat_id=event.chat_id)['admin_id'] == event.user_id:
         return True
     else:
-        return chat_manager.is_admin(peer, user_id)
+        return chat_manager.is_admin(event.chat_id, event.user_id)
 
 
 def list_subscriptions(event: Event, *args):
