@@ -93,7 +93,7 @@ def list_subscriptions(event: Event, *args):
 
 
 def subscribe_group(event: Event, link: str, *args):
-    if not check_permission(event.user_id, event.peer_id):
+    if not check_permission(event):
         return 'You are not admin.'
 
     try:
@@ -117,7 +117,7 @@ def subscribe_group(event: Event, link: str, *args):
 
 
 def unsubscribe_group(event: Event, link: str):
-    if not check_permission(event.user_id, event.peer_id):
+    if not check_permission(event):
         return 'You are not admin.'
 
     try:
@@ -139,7 +139,7 @@ def unsubscribe_group(event: Event, link: str):
 
 
 def subscribe_user(event: Event, link: str, filter: str = '', *args):
-    if not check_permission(event.user_id, event.peer_id):
+    if not check_permission(event):
         return 'You are not admin.'
 
     try:
@@ -167,7 +167,7 @@ def subscribe_user(event: Event, link: str, filter: str = '', *args):
 
 
 def unsubscribe_user(event: Event, link: str, filter: str = '', *args):
-    if not check_permission(event.user_id, event.peer_id):
+    if not check_permission(event):
         return 'You are not admin.'
 
     try:
