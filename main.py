@@ -13,7 +13,7 @@ from threading import Thread
 
 pin_code = random.randint(10000, 999999)
 message_parser = message_parser.MessageParser(command_symbol=':')
-vk: vk_api.VkApi = None
+vk = None
 running = False
 parsed_args = {}
 
@@ -47,8 +47,8 @@ def pincode_command(event: Event, pin: str):
     print('New pin-code: {0}'.format(pin_code))
 
     if pin == str(old_pin_code):
-        response = vk.users.get(user_ids=event.user_id, fields=['first_name', 'last_name'])
-        username = '{first_name} {lastname}'.format(**response)
+        response = vk.users.get(user_ids=event.user_id, fields=['first_name', 'last_name'])[0]
+        username = '{first_name} {last_name}'.format(**response)
 
         chat_manager.add_admin(event.user_id)
 

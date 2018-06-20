@@ -9,7 +9,7 @@ def add_admin(userid):
 
 
 def get_admins():
-    database.admins.distinct('userid')
+    return database.admins.distinct('userid')
 
 
 def is_subscribed(subscription_type: str, peer: str, id: str):
